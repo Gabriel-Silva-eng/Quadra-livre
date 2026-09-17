@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuadraLivre - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="container" style="max-width: 800px;"> <!-- Container mais largo para o painel -->
+        <header>
+            <h1>Painel de Agendamento</h1>
+            <button id="btn-sair" class="btn-link" style="color: var(--error-color);">Sair da conta</button>
+        </header>
+
+        <div id="mensagem-status" aria-live="polite" class="status-escondido"></div>
+
+        <section id="sessao-quadras" style="margin-bottom: 2rem;">
+            <h2>Quadras Disponíveis</h2>
+            <!-- A lista de quadras será injetada aqui pelo Javascript -->
+            <div id="lista-quadras" style="background-color: var(--input-bg); padding: 1rem; border-radius: 4px;">
+                Carregando quadras...
+            </div>
+        </section>
+
+        <section id="sessao-agendar">
+            <h2>Novo Agendamento</h2>
+            <form id="form-agendamento">
+                <div class="grupo-input">
+                    <label for="select-quadra">Selecione a Quadra</label>
+                    <select id="select-quadra" required aria-required="true" style="width: 100%; padding: 0.8rem; background-color: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 4px;">
+                        <option value="">Carregando opções...</option>
+                    </select>
+                </div>
+                <div class="grupo-input">
+                    <label for="data-inicio">Data e Hora de Início</label>
+                    <input type="datetime-local" id="data-inicio" required aria-required="true">
+                </div>
+                <div class="grupo-input">
+                    <label for="data-fim">Data e Hora de Término</label>
+                    <input type="datetime-local" id="data-fim" required aria-required="true">
+                </div>
+                <button type="submit" class="btn-primario">Confirmar Agendamento</button>
+            </form>
+        </section>
+    </main>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
