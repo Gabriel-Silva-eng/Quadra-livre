@@ -1,12 +1,12 @@
-/* --- VARIÁVEIS DE TEMA --- */
+/* --- VARIÁVEIS DE TEMA (Novo Padrão Visual) --- */
 :root {
-    --bg-color: #121212;
-    --text-color: #f5f5f5;
-    --primary-color: #00E676; /* Verde Neon para alto contraste */
-    --primary-hover: #00C853;
-    --input-bg: #1e1e1e;
-    --border-color: #333;
-    --error-color: #ff5252;
+    --bg-color: #0f172a; /* Azul muito escuro para o fundo */
+    --text-color: #f8fafc; /* Branco gelo para leitura */
+    --primary-color: #3b82f6; /* Azul moderno de destaque */
+    --primary-hover: #2563eb;
+    --input-bg: #1e293b;
+    --border-color: #334155;
+    --error-color: #ef4444;
 }
 
 /* --- RESET BÁSICO --- */
@@ -28,7 +28,7 @@ body {
 
 /* --- ESTRUTURA --- */
 .container {
-    background-color: #1a1a1a;
+    background-color: #1e293b; /* Fundo do card um pouco mais claro que o body */
     padding: 2.5rem;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
@@ -61,13 +61,22 @@ h2 {
     margin-bottom: 1.2rem;
 }
 
+/* Classes para colocar os inputs de hora lado a lado */
+.linha-dupla {
+    display: flex;
+    gap: 1rem;
+}
+.metade {
+    flex: 1;
+}
+
 label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 600;
 }
 
-input {
+input, select {
     width: 100%;
     padding: 0.8rem;
     border: 1px solid var(--border-color);
@@ -79,7 +88,7 @@ input {
 }
 
 /* Foco acessível para navegação por teclado */
-input:focus {
+input:focus, select:focus {
     outline: 2px solid var(--primary-color);
     border-color: var(--primary-color);
 }
@@ -88,7 +97,7 @@ input:focus {
     width: 100%;
     padding: 1rem;
     background-color: var(--primary-color);
-    color: #000;
+    color: #fff;
     border: none;
     border-radius: 4px;
     font-size: 1.1rem;
@@ -100,7 +109,7 @@ input:focus {
 
 .btn-primario:hover, .btn-primario:focus {
     background-color: var(--primary-hover);
-    outline: 2px solid #fff; /* Destaque extra no foco */
+    outline: 2px solid #fff;
 }
 
 /* Botões que parecem links */
@@ -132,13 +141,13 @@ input:focus {
 }
 
 .msg-erro {
-    background-color: rgba(255, 82, 82, 0.2);
+    background-color: rgba(239, 68, 68, 0.2);
     color: var(--error-color);
     border: 1px solid var(--error-color);
 }
 
 .msg-sucesso {
-    background-color: rgba(0, 230, 118, 0.2);
+    background-color: rgba(59, 130, 246, 0.2);
     color: var(--primary-color);
     border: 1px solid var(--primary-color);
 }

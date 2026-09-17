@@ -1,16 +1,21 @@
 const API_URL = 'http://127.0.0.1:8000';
 const token = localStorage.getItem('quadralivre_token');
 
-// 1. PROTEÇÃO DE ROTA: Se não tem token, volta pro login imediatamente
+// PROTEÇÃO DE ROTA: Volta pro login se não tiver token
 if (!token) {
     window.location.href = 'index.html';
 }
 
 const btnSair = document.getElementById('btn-sair');
 const selectQuadra = document.getElementById('select-quadra');
+const inputData = document.getElementById('data-agendamento');
 const listaQuadrasDiv = document.getElementById('lista-quadras');
 const formAgendamento = document.getElementById('form-agendamento');
 const divStatus = document.getElementById('mensagem-status');
+const containerOcupados = document.getElementById('container-horarios-ocupados');
+const listaOcupados = document.getElementById('lista-horarios-ocupados');
+
+let agendamentosDaQuadraSelecionada = [];
 
 // --- UTILITÁRIOS ---
 function mostrarStatus(mensagem, tipo) {
@@ -26,7 +31,7 @@ function limparStatus() {
 
 // --- LOGOUT ---
 btnSair.addEventListener('click', () => {
-    localStorage.removeItem('quadralivre_token'); // Destrói o token
+    localStorage.removeItem('quadralivre_token');
     window.location.href = 'index.html';
 });
 
@@ -72,21 +77,97 @@ function popularSelect(quadras) {
     });
 }
 
-// --- ENVIAR AGENDAMENTO (REQUER TOKEN) ---
+// --- LÓGICA DE HORÁRIOS OCUPADOS ---
+selectQuadra.addEventListener('change', async (e) => {
+    const quadraId = e.target.value;
+    if (!quadraId) {
+        agendamentosDaQuadraSelecionada = [];
+        atualizarListaOcupados();
+        return;
+    }
+
+    try {
+        const resposta = await fetch(`${API_URL}/quadras/${quadraId}/agendamentos/`);
+        if (resposta.ok) {
+            agendamentosDaQuadraSelecionada = await resposta.json();
+            atualizarListaOcupados();
+        }
+    } catch (error) {
+        console.error("Erro ao buscar agendamentos", error);
+    }
+});
+
+inputData.addEventListener('change', atualizarListaOcupados);
+
+function atualizarListaOcupados() {
+    const dataSelecionada = inputData.value;
+    const quadraId = selectQuadra.value;
+
+    if (!dataSelecionada || !quadraId) {
+        containerOcupados.classList.add('escondido');
+        return;
+    }
+
+    // Filtra os agendamentos da quadra que caem na data selecionada
+    const ocupadosNoDia = agendamentosDaQuadraSelecionada.filter(ag => ag.data_hora_inicio.startsWith(dataSelecionada));
+
+    if (ocupadosNoDia.length === 0) {
+        listaOcupados.innerHTML = '<li style="color: var(--primary-color);">Nenhum horário ocupado. Quadra totalmente livre!</li>';
+    } else {
+        listaOcupados.innerHTML = '';
+        ocupadosNoDia.forEach(ag => {
+            const horaInicio = ag.data_hora_inicio.split('T')[1].substring(0, 5);
+            const horaFim = ag.data_hora_fim.split('T')[1].substring(0, 5);
+            
+            const li = document.createElement('li');
+            li.textContent = `Das ${horaInicio} às ${horaFim}`;
+            li.style.marginBottom = '0.3rem';
+            listaOcupados.appendChild(li);
+        });
+    }
+    containerOcupados.classList.remove('escondido');
+}
+
+// --- ENVIAR AGENDAMENTO (COM VALIDAÇÃO BLINDADA) ---
 formAgendamento.addEventListener('submit', async (e) => {
     e.preventDefault();
     limparStatus();
 
     const quadra_id = document.getElementById('select-quadra').value;
-    const data_hora_inicio = document.getElementById('data-inicio').value;
-    const data_hora_fim = document.getElementById('data-fim').value;
+    const data = document.getElementById('data-agendamento').value;
+    const hora_inicio = document.getElementById('hora-inicio').value;
+    const hora_fim = document.getElementById('hora-fim').value;
+
+    const data_hora_inicio = `${data}T${hora_inicio}:00`;
+    const data_hora_fim = `${data}T${hora_fim}:00`;
+
+    // Converte as strings de hora para objetos Date para calcular a diferença real
+    const objInicio = new Date(data_hora_inicio);
+    const objFim = new Date(data_hora_fim);
+    
+    // Calcula a diferença em minutos
+    const diffMinutos = (objFim - objInicio) / (1000 * 60);
+
+    if (diffMinutos <= 0) {
+        mostrarStatus('A hora de término deve ser no futuro.', 'erro');
+        return;
+    }
+
+    if (diffMinutos < 30) {
+        mostrarStatus('O tempo mínimo de reserva é de 30 minutos.', 'erro');
+        return;
+    }
+
+    if (diffMinutos > 120) {
+        mostrarStatus('Você só pode reservar a quadra por no máximo 2 horas.', 'erro');
+        return;
+    }
 
     try {
         const resposta = await fetch(`${API_URL}/agendamentos/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                // AQUI ESTÁ A MÁGICA: Passando o token no cabeçalho
                 'Authorization': `Bearer ${token}` 
             },
             body: JSON.stringify({
@@ -99,6 +180,10 @@ formAgendamento.addEventListener('submit', async (e) => {
         if (resposta.ok) {
             mostrarStatus('Agendamento realizado com sucesso!', 'sucesso');
             formAgendamento.reset();
+            containerOcupados.classList.add('escondido');
+            
+            // Força a atualização silenciosa da lista de horários ocupados simulando a troca de quadra
+            selectQuadra.dispatchEvent(new Event('change'));
         } else {
             const erroData = await resposta.json();
             mostrarStatus(erroData.detail || 'Erro ao agendar.', 'erro');
@@ -108,5 +193,4 @@ formAgendamento.addEventListener('submit', async (e) => {
     }
 });
 
-// Inicializa a página carregando as quadras
 carregarQuadras();

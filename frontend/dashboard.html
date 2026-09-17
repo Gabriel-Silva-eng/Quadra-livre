@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <main class="container" style="max-width: 800px;"> <!-- Container mais largo para o painel -->
+    <main class="container" style="max-width: 800px;">
         <header>
             <h1>Painel de Agendamento</h1>
             <button id="btn-sair" class="btn-link" style="color: var(--error-color);">Sair da conta</button>
@@ -17,8 +17,7 @@
 
         <section id="sessao-quadras" style="margin-bottom: 2rem;">
             <h2>Quadras Disponíveis</h2>
-            <!-- A lista de quadras será injetada aqui pelo Javascript -->
-            <div id="lista-quadras" style="background-color: var(--input-bg); padding: 1rem; border-radius: 4px;">
+            <div id="lista-quadras" style="background-color: var(--bg-color); padding: 1rem; border-radius: 4px;">
                 Carregando quadras...
             </div>
         </section>
@@ -28,18 +27,36 @@
             <form id="form-agendamento">
                 <div class="grupo-input">
                     <label for="select-quadra">Selecione a Quadra</label>
-                    <select id="select-quadra" required aria-required="true" style="width: 100%; padding: 0.8rem; background-color: var(--input-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 4px;">
+                    <select id="select-quadra" required aria-required="true">
                         <option value="">Carregando opções...</option>
                     </select>
                 </div>
+                
                 <div class="grupo-input">
-                    <label for="data-inicio">Data e Hora de Início</label>
-                    <input type="datetime-local" id="data-inicio" required aria-required="true">
+                    <label for="data-agendamento">Data da Partida</label>
+                    <input type="date" id="data-agendamento" required aria-required="true">
                 </div>
-                <div class="grupo-input">
-                    <label for="data-fim">Data e Hora de Término</label>
-                    <input type="datetime-local" id="data-fim" required aria-required="true">
+
+                <!-- NOVA ÁREA: Mostra horários ocupados para a data selecionada -->
+                <div id="container-horarios-ocupados" class="escondido" style="margin-bottom: 1.2rem; padding: 1rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 4px;">
+                    <h3 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--error-color);">Horários indisponíveis neste dia:</h3>
+                    <ul id="lista-horarios-ocupados" style="list-style-type: none; font-size: 0.9rem; color: var(--text-color);">
+                        <!-- Injetado via JS -->
+                    </ul>
                 </div>
+
+                <div class="linha-dupla">
+                    <div class="grupo-input metade">
+                        <label for="hora-inicio">Hora de Início</label>
+                        <!-- Funciona das 06:00 às 23:30, de 30 em 30 min -->
+                        <input type="time" id="hora-inicio" min="06:00" max="23:30" step="1800" required aria-required="true">
+                    </div>
+                    <div class="grupo-input metade">
+                        <label for="hora-fim">Hora de Término</label>
+                        <input type="time" id="hora-fim" min="06:30" max="23:59" step="1800" required aria-required="true">
+                    </div>
+                </div>
+                
                 <button type="submit" class="btn-primario">Confirmar Agendamento</button>
             </form>
         </section>
