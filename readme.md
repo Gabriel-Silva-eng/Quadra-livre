@@ -1,49 +1,130 @@
-# QuadraLivre 🏀⚽
+# 🏀 QuadraLivre
 
-Um sistema web completo, acessível e seguro para agendamento de quadras esportivas públicas. Desenvolvido como Projeto Integrador.
+Reserva e gestão de quadras esportivas comunitárias — Projeto Integrador.
 
-## 🚀 Arquitetura e Tecnologias
+Conectar moradores a quadras públicas e comunitárias, evitando conflito de horário e organizando o uso compartilhado do espaço com foco em performance, acessibilidade e segurança (Security by Design).
 
-O projeto adota uma arquitetura de API RESTful *stateless* desacoplada do frontend.
+---
 
-**Backend (API):**
-* **Linguagem:** Python 3
-* **Framework:** FastAPI (Alta performance, tipagem estática e documentação Swagger nativa)
-* **Banco de Dados:** SQLite (com SQLAlchemy ORM)
-* **Segurança:** 
-  * Hashing irreversível de senhas com `Bcrypt`.
-  * Autenticação via tokens **JWT (JSON Web Tokens)**.
-  * Proteção de rotas e validação rigorosa de *inputs* (Prevenção de injeções e ataques) com `Pydantic`.
+## Índice
 
-**Frontend (Interface):**
-* **Tecnologias:** HTML5, CSS3, JavaScript (Vanilla)
-* **Foco:** Acessibilidade (Diretrizes WCAG, alto contraste, tags ARIA) e design responsivo.
-* **Comunicação:** Fetch API com tratamento de CORS e injeção de tokens de autorização em tempo de execução.
+- [Sobre](#sobre)
+- [Stack Tecnológica](#stack-tecnológica)
+- [Estrutura do Projeto](#estrutura-do-projeto)
+- [Como Rodar Localmente](#como-rodar-localmente)
+- [API e Rotas](#api-e-rotas)
+- [Requisitos do PI](#requisitos-do-pi)
+- [Próximos Passos](#próximos-passos)
+- [Licença](#licença)
 
-## ⚙️ Regras de Negócio Implementadas
-- [x] Prevenção de conflito de horários (bloqueio de agendamentos sobrepostos).
-- [x] Restrição de tempo (mínimo de 30 minutos, máximo de 2 horas).
-- [x] Validação lógica de cronologia (hora de término obrigatoriamente superior à hora de início).
-- [x] Listagem dinâmica de horários já ocupados por quadra.
+---
 
-## 🛠️ Como executar o projeto localmente
+## Sobre
 
-Você precisará de dois terminais para rodar o sistema de forma segregada.
+QuadraLivre é um sistema web pensado para facilitar a reserva e gestão de quadras. O diferencial deste protótipo é a aplicação de boas práticas de segurança desde a base, utilizando hashing irreversível de senhas e autenticação via tokens JWT (JSON Web Tokens).
 
-### 1. Levantando a API (Backend)
-Na raiz do projeto, ative o ambiente virtual e inicie o servidor Uvicorn:
+Este repositório contém um back-end construído em Python (FastAPI) e um front-end leve feito puramente em HTML, CSS e JavaScript (Vanilla), sem dependência de frameworks pesados, garantindo alta performance e controle total sobre a acessibilidade.
+
+---
+
+## Stack Tecnológica
+
+- **Front-end:** HTML5, CSS3 (Alto Contraste), JavaScript Vanilla (Fetch API)
+- **Back-end:** Python 3 + FastAPI (API RESTful)
+- **Segurança:** PyJWT (Tokens), Passlib/Bcrypt (Hashing de senhas), CORS Middleware
+- **Banco de Dados:** SQLite (via `SQLAlchemy` ORM)
+- **Servidor:** Uvicorn (ASGI)
+- **Controle de Versão:** Git / GitHub
+
+---
+
+## Estrutura do Projeto
+
+```text
+QuadraLivre/
+├── main.py                # Ponto de entrada da API e rotas principais
+├── database.py            # Configuração do banco SQLite e SQLAlchemy
+├── models.py              # Modelos de tabelas do banco de dados (ORM)
+├── schemas.py             # Validação de dados de entrada/saída (Pydantic)
+├── requirements.txt       # Dependências do Python
+├── frontend/
+│   ├── index.html         # Tela de Login e Cadastro
+│   ├── dashboard.html     # Painel de agendamento e listagem de quadras
+│   ├── style.css          # Estilos com variáveis de tema e foco em acessibilidade
+│   ├── app.js             # Lógica de autenticação e comunicação com API
+│   └── dashboard.js       # Regras de negócio do front-end e validação de tempo
+```
+
+---
+
+## Como Rodar Localmente
+
+Siga estes passos em terminais separados para levantar os serviços.
+
+**1) Back-end (Porta 8000)**
+
+Na raiz do projeto, crie e ative o ambiente virtual, instale as dependências e rode o Uvicorn:
+
 ```bash
+python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 uvicorn main:app --reload
-A API estará disponível em http://127.0.0.1:8000.
-A documentação interativa (Swagger) pode ser acessada em http://127.0.0.1:8000/docs.
-2. Levantando a Interface (Frontend)
+```
+*A documentação interativa da API (Swagger) ficará disponível em `http://127.0.0.1:8000/docs`.*
 
-Em um novo terminal, navegue até a pasta frontend e suba um servidor HTTP simples:
-Bash
+**2) Front-end (Porta 5500)**
 
+Em um novo terminal, navegue até a pasta do front-end e suba um servidor estático local para evitar bloqueios de CORS:
+
+```bash
 cd frontend
 python3 -m http.server 5500
+```
+Abra `http://localhost:5500` no seu navegador.
 
-Acesse o aplicativo pelo navegador em: http://localhost:5500.
+---
+
+## API e Rotas
+
+A API foi documentada automaticamente pelo FastAPI. Abaixo os principais endpoints:
+
+| Método | Rota | Descrição | Requer Token? |
+|---|---|---|---|
+| GET | `/` | Status do servidor | Não |
+| POST | `/usuarios/` | Cria um novo usuário (senha passa por hash bcrypt) | Não |
+| POST | `/token` | Autenticação (OAuth2). Retorna o JWT de acesso | Não |
+| GET | `/quadras/` | Lista todas as quadras disponíveis | Não |
+| POST | `/quadras/` | Cadastra nova quadra no sistema | Sim |
+| GET | `/quadras/{id}/agendamentos/`| Retorna os horários já reservados de uma quadra específica | Não |
+| POST | `/agendamentos/` | Cria reserva (Valida conflito de horário → Erro `400`) | Sim |
+
+---
+
+## Requisitos do PI — Como este projeto atende
+
+| Requisito | Como é atendido |
+|---|---|
+| **Framework web** | FastAPI (Back-end) — alta performance e validação estrita. |
+| **Banco de dados** | SQLite relacional gerenciado via ORM SQLAlchemy. |
+| **Script web** | JavaScript Vanilla controlando DOM, consumindo API assincronamente (Fetch) e validando regras de tempo no cliente. |
+| **Uso de API** | Front-end totalmente desacoplado, consumindo a própria API REST. |
+| **Acessibilidade** | Labels explicitamente associados, contraste AA (tema escuro/azul), tags `aria-live`, navegação 100% via teclado. |
+| **Controle de versão** | Repositório Git com commits atômicos. |
+| **Segurança (Extra)**| Proteção contra SQL Injection (ORM), senhas criptografadas e rotas blindadas com JWT. |
+| **Nuvem** | *Próximo passo:* Deploy do back-end (Render) e front-end (GitHub Pages/Vercel). |
+| **Testes** | *Próximo passo:* Implementação de suíte de testes com `pytest`. |
+
+---
+
+## Próximos Passos
+
+1. **Deploy em Nuvem:** Hospedar a aplicação para acesso público (Render / Vercel).
+2. **Testes Automatizados:** Desenvolver scripts de teste (Red Team approach) para tentar quebrar a validação de horários usando `pytest`.
+3. **Melhorias de Usabilidade:** Relatórios visuais de ocupação e painel de administração.
+
+---
+
+## Licença
+
+Este projeto se encontra sob a licença MIT.
