@@ -3,37 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuadraLivre - Login</title>
+    <title>Portal do Cidadão - QuadraLivre Potim</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    
+    <!-- BARRA DE ACESSIBILIDADE GOVERNAMENTAL -->
+    <div class="barra-acessibilidade">
+        <div class="conteudo-acessibilidade">
+            <span>Portal do Cidadão - Potim/SP</span>
+            <div class="botoes-acessibilidade">
+                <button type="button" id="btn-aumentar-fonte" aria-label="Aumentar tamanho do texto">A+</button>
+                <button type="button" id="btn-diminuir-fonte" aria-label="Diminuir tamanho do texto">A-</button>
+                <button type="button" id="btn-alto-contraste" aria-label="Ativar Alto Contraste">Alto Contraste</button>
+            </div>
+        </div>
+    </div>
+
     <main class="container">
         <header>
-            <h1>QuadraLivre</h1>
-            <p>Agendamento rápido de quadras públicas.</p>
+            <h1>Prefeitura de Potim</h1>
+            <p>Sistema Integrado de Agendamento de Espaços Públicos</p>
         </header>
 
-        <!-- Container para mensagens de erro anunciadas por leitores de tela -->
         <div id="mensagem-status" aria-live="polite" class="status-escondido"></div>
 
         <section id="sessao-login">
-            <h2>Entrar</h2>
+            <h2>Acesso ao Sistema</h2>
             <form id="form-login">
                 <div class="grupo-input">
-                    <label for="login-email">E-mail</label>
+                    <label for="login-email">E-mail do Cidadão</label>
                     <input type="email" id="login-email" name="username" required aria-required="true">
                 </div>
                 <div class="grupo-input">
                     <label for="login-senha">Senha</label>
                     <input type="password" id="login-senha" name="password" required aria-required="true">
                 </div>
-                <button type="submit" class="btn-primario">Acessar Sistema</button>
+                <button type="submit" class="btn-primario">Entrar</button>
             </form>
-            <p>Não tem conta? <button type="button" id="btn-mostrar-cadastro" class="btn-link">Cadastre-se aqui</button></p>
+            <p style="margin-top: 1rem; text-align: center;">Primeiro acesso? <button type="button" id="btn-mostrar-cadastro" class="btn-link">Cadastre-se</button></p>
         </section>
 
         <section id="sessao-cadastro" class="escondido">
-            <h2>Novo Cadastro</h2>
+            <h2>Cadastro de Cidadão</h2>
             <form id="form-cadastro">
                 <div class="grupo-input">
                     <label for="cadastro-nome">Nome Completo</label>
@@ -47,12 +59,13 @@
                     <label for="cadastro-senha">Senha</label>
                     <input type="password" id="cadastro-senha" required aria-required="true">
                 </div>
-                <button type="submit" class="btn-primario">Criar Conta</button>
+                <button type="submit" class="btn-primario">Registrar</button>
             </form>
-            <p>Já possui conta? <button type="button" id="btn-mostrar-login" class="btn-link">Voltar ao Login</button></p>
+            <p style="margin-top: 1rem; text-align: center;"><button type="button" id="btn-mostrar-login" class="btn-link">Voltar ao Login</button></p>
         </section>
     </main>
 
+    <script src="acessibilidade.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

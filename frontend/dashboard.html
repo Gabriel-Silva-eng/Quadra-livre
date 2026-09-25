@@ -3,65 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuadraLivre - Dashboard</title>
+    <title>Painel de Agendamento - Prefeitura de Potim</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    
+    <!-- BARRA DE ACESSIBILIDADE GOVERNAMENTAL -->
+    <div class="barra-acessibilidade">
+        <div class="conteudo-acessibilidade">
+            <span>Portal do Cidadão - Potim/SP</span>
+            <div class="botoes-acessibilidade">
+                <button type="button" id="btn-aumentar-fonte" aria-label="Aumentar tamanho do texto">A+</button>
+                <button type="button" id="btn-diminuir-fonte" aria-label="Diminuir tamanho do texto">A-</button>
+                <button type="button" id="btn-alto-contraste" aria-label="Ativar Alto Contraste">Alto Contraste</button>
+            </div>
+        </div>
+    </div>
+
     <main class="container" style="max-width: 800px;">
         <header>
-            <h1>Painel de Agendamento</h1>
-            <button id="btn-sair" class="btn-link" style="color: var(--error-color);">Sair da conta</button>
+            <h1>Departamento de Esportes</h1>
+            <p>Reserva de Quadras Comunitárias</p>
+            <button id="btn-sair" class="btn-link" style="color: var(--error-color); margin-top: 1rem;">Sair do Sistema</button>
         </header>
 
         <div id="mensagem-status" aria-live="polite" class="status-escondido"></div>
 
-        <section id="sessao-quadras" style="margin-bottom: 2rem;">
-            <h2>Quadras Disponíveis</h2>
-            <div id="lista-quadras" style="background-color: var(--bg-color); padding: 1rem; border-radius: 4px;">
-                Carregando quadras...
+        <section id="sessao-quadras" style="margin-bottom: 2rem; border: 1px solid var(--border-color); padding: 1rem;">
+            <h2>Quadras Disponíveis na Gestão Atual</h2>
+            <div id="lista-quadras">
+                Carregando dados públicos...
             </div>
         </section>
 
-        <section id="sessao-agendar">
-            <h2>Novo Agendamento</h2>
+        <section id="sessao-agendar" style="border: 1px solid var(--border-color); padding: 1rem;">
+            <h2>Solicitação de Reserva</h2>
             <form id="form-agendamento">
                 <div class="grupo-input">
-                    <label for="select-quadra">Selecione a Quadra</label>
+                    <label for="select-quadra">Espaço Público</label>
                     <select id="select-quadra" required aria-required="true">
-                        <option value="">Carregando opções...</option>
+                        <option value="">Aguardando seleção...</option>
                     </select>
                 </div>
                 
                 <div class="grupo-input">
-                    <label for="data-agendamento">Data da Partida</label>
+                    <label for="data-agendamento">Data de Utilização</label>
                     <input type="date" id="data-agendamento" required aria-required="true">
                 </div>
 
-                <!-- NOVA ÁREA: Mostra horários ocupados para a data selecionada -->
-                <div id="container-horarios-ocupados" class="escondido" style="margin-bottom: 1.2rem; padding: 1rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 4px;">
-                    <h3 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--error-color);">Horários indisponíveis neste dia:</h3>
-                    <ul id="lista-horarios-ocupados" style="list-style-type: none; font-size: 0.9rem; color: var(--text-color);">
+                <div id="container-horarios-ocupados" class="escondido" style="margin-bottom: 1.2rem; padding: 1rem; background-color: var(--input-bg); border: 2px dashed var(--error-color);">
+                    <h3 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--error-color);">Horários já reservados neste dia:</h3>
+                    <ul id="lista-horarios-ocupados" style="list-style-type: none; font-size: 0.9rem;">
                         <!-- Injetado via JS -->
                     </ul>
                 </div>
 
                 <div class="linha-dupla">
                     <div class="grupo-input metade">
-                        <label for="hora-inicio">Hora de Início</label>
-                        <!-- Funciona das 06:00 às 23:30, de 30 em 30 min -->
+                        <label for="hora-inicio">Início da Utilização</label>
                         <input type="time" id="hora-inicio" min="06:00" max="23:30" step="1800" required aria-required="true">
                     </div>
                     <div class="grupo-input metade">
-                        <label for="hora-fim">Hora de Término</label>
+                        <label for="hora-fim">Término da Utilização</label>
                         <input type="time" id="hora-fim" min="06:30" max="23:59" step="1800" required aria-required="true">
                     </div>
                 </div>
                 
-                <button type="submit" class="btn-primario">Confirmar Agendamento</button>
+                <button type="submit" class="btn-primario">Confirmar Solicitação</button>
             </form>
         </section>
     </main>
 
+    <script src="acessibilidade.js"></script>
     <script src="dashboard.js"></script>
 </body>
 </html>
